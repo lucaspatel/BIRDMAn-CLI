@@ -5,6 +5,7 @@ import biom
 from birdman import SingleFeatureModel
 import numpy as np
 import pandas as pd
+import os
 
 # PROVIDE FILEPATH TO STAN MODEL
 # ENSURE THAT YOU HAVE COMPILED THIS MODEL BY 
@@ -12,7 +13,10 @@ import pandas as pd
 # OPENING PYTHON/IPYTHON  
 # IMPORTING CMDSTANPY, THEN RUNNING 
 # cmdstanpy.CmdStanModel(stan_file="path/to/model.stan")
-MODEL_PATH = "/home/lpatel/projects/2024-07-17_q2-birdman/src/stan/negative_binomial_single.stan"
+
+# get the directory of the current script
+current_dir = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(current_dir, "stan", "negative_binomial_single.stan")
 
 # NAME CLASS SOMETHING RELEVANT TO YOUR MODEL
 class ModelSingle(SingleFeatureModel):
@@ -41,7 +45,6 @@ class ModelSingle(SingleFeatureModel):
             num_warmup=num_warmup,
             **kwargs
         )
-
 
         self.create_regression(formula=formula, metadata=metadata)
 

@@ -38,9 +38,25 @@ def run_birdman(
     inv_disp_sd,
     logfile,
 ):
+    def infer_dtype(series):
+      # try to convert to numeric, if it fails, return 'object' (string)
+      try:
+          pd.to_numeric(series)
+          return 'float64'
+      except ValueError:
+          return 'object'
+
+    MD = pd.read_table(metadata_path, sep="\t", dtype="str")
+    MD = MD.set_index(MD.columns[0])
+
+    dtypes = {col: infer_dtype(MD[col]) for col in MD.columns}
+    MD = MD.astype(dtypes)
+
+    for col in MD.columns:
+        if MD[col].dtype == 'float64' and MD[col].apply(float.is_integer).all():
+            MD[col] = MD[col].astype('int64') 
 
     TABLE = biom.load_table(table_path)
-    MD = pd.read_table(metadata_path, sep="\t", index_col='sample_name')
     FIDS = TABLE.ids(axis="observation")
     birdman_logger = setup_loggers(logfile)
     

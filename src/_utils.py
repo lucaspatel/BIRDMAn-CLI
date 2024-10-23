@@ -20,7 +20,8 @@ def is_valid_patsy_formula(formula, table_path, metadata_path):
     """
     table = biom.load_table(table_path)
     sample_names = table.ids(axis="sample")
-    metadata = pd.read_csv(metadata_path, sep='\t', dtype=str, index_col=0)
+    metadata = pd.read_csv(metadata_path, sep='\t', dtype=str)
+    metadata = metadata.set_index(metadata.columns[0])
     variables = list(metadata.columns)
     formatted_list = ', '.join(variables)
     try:
